@@ -92,7 +92,7 @@ You can deploy MongoDB with one click in Okteto Cloud, so we'll go with tat. Bro
 
 ![OpenFaaS in Okteto Cloud](media/mongodb.png)
 
-The MongoDB instance deployed by Okteto creates a kubernetes secret with the password. We are going to use it directly in our function so we don't have to hard code any passwords, by using OpenFaaS' secrets. Update `hello-python3.yml` so it looks like this.
+The MongoDB instance deployed by Okteto creates a kubernetes secret with the password. OpenFaaS supports directly mounting Kubernetes secrets in any function. We We are going to use this feature so we don't have to hard code any passwords. Add a `secrets` key to your `hello-python3.yml` so it looks like this:
 
 ```yaml
 version: 1.0
@@ -108,12 +108,18 @@ functions:
       - mongodb
 ```
 
-Launch your function again so it picks up this new configuration.
+And update the function:
 
 ```console
 faas-cli up -f hello-python3.yml
 ```
 
+```console
+Deploying: hello-python3.
+
+Deployed. 202 Accepted.
+URL: https://openfaas-ingress-rberrelleza.cloud.okteto.net/function/hello-python3
+```
 
 ## Develop your function
 
@@ -358,9 +364,9 @@ $ curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python
 
 ## Conclusion
 
-In this post we showed you how easy it is to develop OpenFaaS with Okteto and Okteto Cloud. 
+In this post we showed you how easy it is to develop [OpenFaaS](https://openfaas.io) functions with [Okteto](https://github.com/okteto/okteto) and [Okteto Cloud](https://cloud.okteto.com) 
 
-First, we used Okteto Cloud to deploy dev instances of OpenFaaS and MongoDb with a single click, creating a realistic production-like enviroment for us to develop our function.
+First, we used Okteto Cloud to deploy dev instances of OpenFaaS and MongoDb with a single click, creating a realistic production-like environment for us to develop our function.
 
 Then we used `okteto` to deploy a remote development environment for our function, with the same configuration we would use in production. There, we took advantage of okteto's  file synchronization and hot reloading features to get instant feedback as we updated our function.
 
