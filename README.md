@@ -11,7 +11,9 @@
 
 ### Deploy your Initial Function
 
-Login to Okteto Cloud and deploy your own instance of OpenFaaS. Don't forget to update the password.
+Login to Okteto Cloud and deploy your own instance of OpenFaaS. Don't forget to update the password!
+
+![OpenFaaS in Okteto Cloud](media/openfaas.png)
 
 Open a terminal, and export your github ID (e.g. rberrelleza)
 
@@ -86,7 +88,9 @@ For the purpose of this demo, we are going to update our function to keep track 
 - On POST, take the body of the request and save in on mongodb
 - On GET, return the list of attendees. 
 
-You can deploy MongoDB with one click in Okteto Cloud, so let's do that to keep things simple. Browse back to the Okteto Cloud UI and deploy your MongoDB instance. 
+You can deploy MongoDB with one click in Okteto Cloud, so we'll go with tat. Browse back to Okteto Cloud and deploy your MongoDB instance. 
+
+![OpenFaaS in Okteto Cloud](media/openfaas.png)
 
 The MongoDB instance deployed by Okteto creates a kubernetes secret with the password. We are going to use it directly in our function so we don't have to hard code any passwords, by using OpenFaaS' secrets. Update `hello-python3.yml` so it looks like this.
 
@@ -270,7 +274,7 @@ Since we are adding a non-standard dependency (`pymongo`), we'll have to install
 app@hello-python3-846f46875f-h99tn:~$ pip install -r function/requirements.txt
 ```
 
-```
+```console
 ...
 Collecting pymongo
   Using cached pymongo-3.10.1-cp38-cp38-manylinux2014_x86_64.whl (480 kB)
@@ -280,7 +284,7 @@ Successfully installed pymongo-3.10.1
 
 And start `fwatchdog`:
 
-```
+```console
 app@hello-python3-846f46875f-h99tn:~$ fwatchdog
 ```
 
@@ -295,13 +299,17 @@ app@hello-python3-846f46875f-h99tn:~$ fwatchdog
 No we are ready for the final test. First, let's do a `POST` call to register a new attendee.
 
 ```console
-curl -XPOST https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3 -d "ramiro"
+$ curl -XPOST https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3 -d "ramiro"
+```
+
+```console
+ok
 ```
 
 Call it a couple of times with different names. Once you are done, do a `GET` to get the final list of attendees.
 
 ```console
-curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
+$ curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
 ```
 
 ```json
@@ -324,7 +332,7 @@ $ okteto down
 
 > `okteto down` will restore your function to the state before we started developing. 
 
-Finally, run `faas-cli up` one more time to build and deploy the final version of the function.
+Finally, run `faas-cli up` one more time to build and deploy the final version of your function.
 
 ```console
 $ cd ..
@@ -341,7 +349,7 @@ URL: https://openfaas-ingress-rberrelleza.cloud.okteto.net/function/hello-python
 Check that everything worked by calling the function to get the list of attendees:
 
 ```console
-curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
+$ curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
 ```
 
 ```json
