@@ -1,0 +1,12 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: https://openfaas-ingress-rberrelleza.cloud.okteto.net
+functions:
+  hello-python3:
+    lang: python3-debian
+    handler: ./hello-python3
+    image: registry.cloud.okteto.net/rberrelleza/hello-python3:latest
+    secrets:
+      - mongodb
+
