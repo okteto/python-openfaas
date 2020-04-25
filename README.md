@@ -90,7 +90,7 @@ For the purpose of this demo, we are going to update our function to keep track 
 
 You can deploy MongoDB with one click in Okteto Cloud, so we'll go with tat. Browse back to Okteto Cloud and deploy your MongoDB instance. 
 
-![OpenFaaS in Okteto Cloud](media/openfaas.png)
+![OpenFaaS in Okteto Cloud](media/mongodb.png)
 
 The MongoDB instance deployed by Okteto creates a kubernetes secret with the password. We are going to use it directly in our function so we don't have to hard code any passwords, by using OpenFaaS' secrets. Update `hello-python3.yml` so it looks like this.
 
