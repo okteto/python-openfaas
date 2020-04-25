@@ -1,17 +1,21 @@
 # Develop you Python functions with OpenFaaS and Okteto
 
+In this post we'll talk about how to build a python-based function with OpenFaaS and Okteto.
+
 ## Prerequisites
 
-1. Create a free account on Okteto Cloud
+1. Create a [free Okteto Cloud account](https://cloud.okteto.com)
 1. Install the [OpenFaaS cli](https://docs.openfaas.com/cli/install/)
 1. Docker running on your local machine
-1. Download and set your kubernetes credentials locally
+1. Download and configure your Okteto Cloud [Kubernetes credentials](https://okteto.com/docs/cloud/credentials)
 
 ## Steps
 
 ### Deploy your Initial Function
 
-Login to Okteto Cloud and deploy your own instance of OpenFaaS. Don't forget to update the password.
+Login to Okteto Cloud and deploy your own instance of OpenFaaS. Don't forget to update the password!
+
+![OpenFaaS in Okteto Cloud](media/openfaas.png)
 
 Open a terminal, and export your github ID (e.g. rberrelleza)
 
@@ -86,9 +90,11 @@ For the purpose of this demo, we are going to update our function to keep track 
 - On POST, take the body of the request and save in on mongodb
 - On GET, return the list of attendees. 
 
-You can deploy MongoDB with one click in Okteto Cloud, so let's do that to keep things simple. Browse back to the Okteto Cloud UI and deploy your MongoDB instance. 
+You can deploy MongoDB with one click in Okteto Cloud, so we'll go with tat. Browse back to Okteto Cloud and deploy your MongoDB instance. 
 
-The MongoDB instance deployed by Okteto creates a kubernetes secret with the password. We are going to use it directly in our function so we don't have to hard code any passwords, by using OpenFaaS' secrets. Update `hello-python3.yml` so it looks like this.
+![OpenFaaS in Okteto Cloud](media/mongodb.png)
+
+The MongoDB instance deployed by Okteto creates a kubernetes secret with the password. OpenFaaS supports directly mounting Kubernetes secrets in any function. We We are going to use this feature so we don't have to hard code any passwords. Add a `secrets` key to your `hello-python3.yml` so it looks like this:
 
 ```yaml
 version: 1.0
@@ -104,12 +110,18 @@ functions:
       - mongodb
 ```
 
-Launch your function again so it picks up this new configuration.
+And update the function:
 
 ```console
 faas-cli up -f hello-python3.yml
 ```
 
+```console
+Deploying: hello-python3.
+
+Deployed. 202 Accepted.
+URL: https://openfaas-ingress-rberrelleza.cloud.okteto.net/function/hello-python3
+```
 
 ## Develop your function
 
@@ -270,7 +282,7 @@ Since we are adding a non-standard dependency (`pymongo`), we'll have to install
 app@hello-python3-846f46875f-h99tn:~$ pip install -r function/requirements.txt
 ```
 
-```
+```console
 ...
 Collecting pymongo
   Using cached pymongo-3.10.1-cp38-cp38-manylinux2014_x86_64.whl (480 kB)
@@ -280,7 +292,7 @@ Successfully installed pymongo-3.10.1
 
 And start `fwatchdog`:
 
-```
+```console
 app@hello-python3-846f46875f-h99tn:~$ fwatchdog
 ```
 
@@ -295,13 +307,17 @@ app@hello-python3-846f46875f-h99tn:~$ fwatchdog
 No we are ready for the final test. First, let's do a `POST` call to register a new attendee.
 
 ```console
-curl -XPOST https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3 -d "ramiro"
+$ curl -XPOST https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3 -d "ramiro"
+```
+
+```console
+ok
 ```
 
 Call it a couple of times with different names. Once you are done, do a `GET` to get the final list of attendees.
 
 ```console
-curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
+$ curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
 ```
 
 ```json
@@ -324,7 +340,7 @@ $ okteto down
 
 > `okteto down` will restore your function to the state before we started developing. 
 
-Finally, run `faas-cli up` one more time to build and deploy the final version of the function.
+Finally, run `faas-cli up` one more time to build and deploy the final version of your function.
 
 ```console
 $ cd ..
@@ -341,7 +357,7 @@ URL: https://openfaas-ingress-rberrelleza.cloud.okteto.net/function/hello-python
 Check that everything worked by calling the function to get the list of attendees:
 
 ```console
-curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
+$ curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
 ```
 
 ```json
@@ -350,9 +366,9 @@ curl https://openfaas-ingress-$GITHUBID.cloud.okteto.net/function/hello-python3
 
 ## Conclusion
 
-In this post we showed you how easy it is to develop OpenFaaS with Okteto and Okteto Cloud. 
+In this post we showed you how easy it is to develop [OpenFaaS](https://openfaas.io) functions with [Okteto](https://github.com/okteto/okteto) and [Okteto Cloud](https://cloud.okteto.com) 
 
-First, we used Okteto Cloud to deploy dev instances of OpenFaaS and MongoDb with a single click, creating a realistic production-like enviroment for us to develop our function.
+First, we used Okteto Cloud to deploy dev instances of OpenFaaS and MongoDb with a single click, creating a realistic production-like environment for us to develop our function.
 
 Then we used `okteto` to deploy a remote development environment for our function, with the same configuration we would use in production. There, we took advantage of okteto's  file synchronization and hot reloading features to get instant feedback as we updated our function.
 
