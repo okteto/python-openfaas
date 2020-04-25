@@ -1,11 +1,13 @@
 # Develop you Python functions with OpenFaaS and Okteto
 
+In this post we'll talk about how to build a python-based function with OpenFaaS and Okteto.
+
 ## Prerequisites
 
-1. Create a free account on Okteto Cloud
+1. Create a [free Okteto Cloud account](https://cloud.okteto.com)
 1. Install the [OpenFaaS cli](https://docs.openfaas.com/cli/install/)
 1. Docker running on your local machine
-1. Download and set your kubernetes credentials locally
+1. Download and configure your Okteto Cloud [Kubernetes credentials](https://okteto.com/docs/cloud/credentials)
 
 ## Steps
 
