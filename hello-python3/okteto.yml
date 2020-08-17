@@ -2,3 +2,5 @@ name: hello-python3
 command: ["bash"]
 workdir: /home/app
 mountpath: /home/app/function
+persistentVolume:
+  enabled: false
